@@ -24,7 +24,6 @@ void getData(menuItemType menuList[], int &kiekis) {
         fin.ignore();
         kiekis++;
     }
-
     fin.close();
 }
 
