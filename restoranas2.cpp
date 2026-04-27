@@ -5,12 +5,12 @@
 
 using namespace std;
 
-struct menuItemType {
-    string menuItem;
-    double menuPrice;
+struct menuitemtype {
+    string menuitem;
+    double menuprice;
 };
 
-void getData(menuItemType menuList[], int &kiekis) {
+void getdata(menuitemtype menulist[], int &kiekis) {
     ifstream fin("menu.txt");
 
     kiekis = 0;
@@ -20,7 +20,7 @@ void getData(menuItemType menuList[], int &kiekis) {
         return;
     }
 
-    while (getline(fin, menuList[kiekis].menuItem, ';') && fin >> menuList[kiekis].menuPrice) {
+    while (kiekis < 20 && getline(fin, menulist[kiekis].menuitem, ';') && fin >> menulist[kiekis].menuprice) {
         fin.ignore();
         kiekis++;
     }
@@ -28,14 +28,14 @@ void getData(menuItemType menuList[], int &kiekis) {
     fin.close();
 }
 
-void showMenu(menuItemType menuList[], int kiekis) {
+void showmenu(menuitemtype menulist[], int kiekis) {
     cout << endl;
     cout << "PUSRYCIU MENIU" << endl;
 
     for (int i = 0; i < kiekis; i++) {
         int numeris = i + 1;
-        string pavadinimas = menuList[i].menuItem;
-        double kaina = menuList[i].menuPrice;
+        string pavadinimas = menulist[i].menuitem;
+        double kaina = menulist[i].menuprice;
 
         cout << numeris << ". " << pavadinimas << " - "
              << fixed << setprecision(2) << kaina << " EUR" << endl;
@@ -43,76 +43,78 @@ void showMenu(menuItemType menuList[], int kiekis) {
 }
 
 int main() {
-    menuItemType menuList[20];
+    menuitemtype menulist[20];
     int kiekis = 0;
 
-    getData(menuList, kiekis);
+    getdata(menulist, kiekis);
 
     if (kiekis == 0) {
         return 0;
     }
 
-    showMenu(menuList, kiekis);
+    showmenu(menulist, kiekis);
 
     int pasirinkimai[20];
     int porcijos[20];
-    int kiekPasirinkta = 0;
+    int kiekpasirinkta = 0;
 
     char testi = 't';
 
     while (testi == 't' || testi == 'T') {
-        int ivestasNumeris;
-        int ivestasKiekis;
+        int ivestasnumeris;
+        int ivestaskiekis;
 
         cout << endl;
         cout << "Iveskite patiekalo numeri: ";
-        cin >> ivestasNumeris;
+        cin >> ivestasnumeris;
 
-        if (ivestasNumeris < 1 || ivestasNumeris > kiekis) {
+        if (ivestasnumeris < 1 || ivestasnumeris > kiekis) {
             cout << "Neteisingas numeris." << endl;
             continue;
         }
 
         cout << "Iveskite porciju kieki: ";
-        cin >> ivestasKiekis;
+        cin >> ivestaskiekis;
 
-        if (ivestasKiekis < 1) {
+        if (ivestaskiekis < 1) {
             cout << "Neteisingas kiekis." << endl;
             continue;
         }
 
-        int tikrasIndex = ivestasNumeris - 1;
+        int tikrasindex = ivestasnumeris - 1;
 
-        pasirinkimai[kiekPasirinkta] = tikrasIndex;
-        porcijos[kiekPasirinkta] = ivestasKiekis;
-        kiekPasirinkta++;
+        pasirinkimai[kiekpasirinkta] = tikrasindex;
+        porcijos[kiekpasirinkta] = ivestaskiekis;
 
-        cout << "Pasirinkta: " << menuList[tikrasIndex].menuItem << endl;
+        kiekpasirinkta++;
+
         cout << "Ar norite testi? (t/n): ";
         cin >> testi;
     }
 
-    double tarpineSuma = 0.0;
+    double tarpinesuma = 0.0;
 
     cout << endl;
     cout << "Jusu pasirinkti patiekalai:" << endl;
 
-    for (int i = 0; i < kiekPasirinkta; i++) {
+    for (int i = 0; i < kiekpasirinkta; i++) {
         int index = pasirinkimai[i];
-        string pavadinimas = menuList[index].menuItem;
-        double vienetoKaina = menuList[index].menuPrice;
-        int porcijuKiekis = porcijos[i];
-        double patiekaloSuma = vienetoKaina * porcijuKiekis;
 
-        tarpineSuma = tarpineSuma + patiekaloSuma;
+        string pavadinimas = menulist[index].menuitem;
+        double vienetokaina = menulist[index].menuprice;
+        int porcijukiekis = porcijos[i];
 
-        cout << porcijuKiekis << " x " << pavadinimas << " - "
-             << fixed << setprecision(2) << patiekaloSuma << " EUR" << endl;
+        double patiekalosuma = vienetokaina * porcijukiekis;
+
+        tarpinesuma = tarpinesuma + patiekalosuma;
+
+        cout << porcijukiekis << " x " << pavadinimas << " - "
+             << fixed << setprecision(2) << patiekalosuma << " EUR" << endl;
     }
 
     cout << endl;
-    cout << "Tarpine suma: " << fixed << setprecision(2) << tarpineSuma << " EUR" << endl;
-    cout << "Galutinis spausdinimas ir receipt failas bus prideti veliau." << endl;
+    cout << "Tarpine suma: " << fixed << setprecision(2) << tarpinesuma << " EUR" << endl;
+    cout << "PVM ir saskaitos failas bus prideti veliau." << endl;
 
     return 0;
 }
