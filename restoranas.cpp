@@ -5,12 +5,14 @@
 
 using namespace std;
 
-struct menuItemType {
-    string menuItem;
-    double menuPrice;
+// struktura saugo patiekalo pavadinima ir kaina
+struct menuitemtype {
+    string menuitem;
+    double menuprice;
 };
 
-void getData(menuItemType menuList[], int &kiekis) {
+// nuskaito meniu duomenis is failo
+void getdata(menuitemtype menulist[], int &kiekis) {
     ifstream fin("menu.txt");
 
     kiekis = 0;
@@ -20,125 +22,128 @@ void getData(menuItemType menuList[], int &kiekis) {
         return;
     }
 
-    while (getline(fin, menuList[kiekis].menuItem, ';') && fin >> menuList[kiekis].menuPrice) {
+    while (getline(fin, menulist[kiekis].menuitem, ';') && fin >> menulist[kiekis].menuprice) {
         fin.ignore();
         kiekis++;
     }
+
     fin.close();
 }
 
-void showMenu(menuItemType menuList[], int kiekis) {
+// parodo meniu
+void showmenu(menuitemtype menulist[], int kiekis) {
     cout << endl;
     cout << "PUSRYCIU MENIU" << endl;
 
     for (int i = 0; i < kiekis; i++) {
         int numeris = i + 1;
-        string pavadinimas = menuList[i].menuItem;
-        double kaina = menuList[i].menuPrice;
+        string pavadinimas = menulist[i].menuitem;
+        double kaina = menulist[i].menuprice;
 
         cout << numeris << ". " << pavadinimas << " - "
              << fixed << setprecision(2) << kaina << " EUR" << endl;
     }
 }
 
-void printCheck(menuItemType menuList[], int pasirinkimai[], int porcijos[], int kiekPasirinkta) {
+// skaiciuoja saskaita ir isveda i faila
+void printcheck(menuitemtype menulist[], int pasirinkimai[], int porcijos[], int kiekpasirinkta) {
     ofstream fout("receipt.txt");
 
-    double tarpineSuma = 0.0;
-    double pvmProcentas = 0.21;
+    double tarpinesuma = 0.0;
+    double pvmprocentas = 0.21;
 
     cout << endl;
-    cout << "Restorana cekis" << endl;
-    fout << "Restorana cekis" << endl;
+    cout << "Sveiki atvyke i restorana" << endl;
+    fout << "Sveiki atvyke i restorana" << endl;
 
     cout << endl;
     fout << endl;
 
-    for (int i = 0; i < kiekPasirinkta; i++) {
+    for (int i = 0; i < kiekpasirinkta; i++) {
         int index = pasirinkimai[i];
 
-        string pavadinimas = menuList[index].menuItem;
-        double vienetoKaina = menuList[index].menuPrice;
-        int porcijuKiekis = porcijos[i];
+        string pavadinimas = menulist[index].menuitem;
+        double vienetokaina = menulist[index].menuprice;
+        int porcijukiekis = porcijos[i];
 
-        double patiekaloSuma = vienetoKaina * porcijuKiekis;
+        double patiekalosuma = vienetokaina * porcijukiekis;
 
-        tarpineSuma = tarpineSuma + patiekaloSuma;
+        tarpinesuma = tarpinesuma + patiekalosuma;
 
-        cout << porcijuKiekis << " x " << pavadinimas << " "
-             << fixed << setprecision(2) << patiekaloSuma << " EUR" << endl;
+        cout << porcijukiekis << " x " << pavadinimas << " "
+             << fixed << setprecision(2) << patiekalosuma << " EUR" << endl;
 
-        fout << porcijuKiekis << " x " << pavadinimas << " "
-             << fixed << setprecision(2) << patiekaloSuma << " EUR" << endl;
+        fout << porcijukiekis << " x " << pavadinimas << " "
+             << fixed << setprecision(2) << patiekalosuma << " EUR" << endl;
     }
 
-    double pvmSuma = tarpineSuma * pvmProcentas;
-    double galutineSuma = tarpineSuma + pvmSuma;
+    double pvmsuma = tarpinesuma * pvmprocentas;
+    double galutinesuma = tarpinesuma + pvmsuma;
 
     cout << endl;
-    cout << "Tarpine suma: " << fixed << setprecision(2) << tarpineSuma << " EUR" << endl;
-    cout << "PVM (21%): " << fixed << setprecision(2) << pvmSuma << " EUR" << endl;
-    cout << "Galutine suma: " << fixed << setprecision(2) << galutineSuma << " EUR" << endl;
+    cout << "Tarpine suma: " << fixed << setprecision(2) << tarpinesuma << " EUR" << endl;
+    cout << "PVM (21%): " << fixed << setprecision(2) << pvmsuma << " EUR" << endl;
+    cout << "Galutine suma: " << fixed << setprecision(2) << galutinesuma << " EUR" << endl;
 
     fout << endl;
-    fout << "Tarpine suma: " << fixed << setprecision(2) << tarpineSuma << " EUR" << endl;
-    fout << "PVM (21%): " << fixed << setprecision(2) << pvmSuma << " EUR" << endl;
-    fout << "Galutine suma: " << fixed << setprecision(2) << galutineSuma << " EUR" << endl;
+    fout << "Tarpine suma: " << fixed << setprecision(2) << tarpinesuma << " EUR" << endl;
+    fout << "PVM (21%): " << fixed << setprecision(2) << pvmsuma << " EUR" << endl;
+    fout << "Galutine suma: " << fixed << setprecision(2) << galutinesuma << " EUR" << endl;
 
     fout.close();
 }
 
 int main() {
-    menuItemType menuList[20];
+    menuitemtype menulist[20];
     int kiekis = 0;
 
-    getData(menuList, kiekis);
+    getdata(menulist, kiekis);
 
     if (kiekis == 0) {
         return 0;
     }
 
-    showMenu(menuList, kiekis);
+    showmenu(menulist, kiekis);
 
     int pasirinkimai[20];
     int porcijos[20];
-    int kiekPasirinkta = 0;
+    int kiekpasirinkta = 0;
 
     char testi = 't';
 
     while (testi == 't' || testi == 'T') {
-        int ivestasNumeris;
-        int ivestasKiekis;
+        int ivestasnumeris;
+        int ivestaskiekis;
 
         cout << endl;
         cout << "Iveskite patiekalo numeri: ";
-        cin >> ivestasNumeris;
+        cin >> ivestasnumeris;
 
-        if (ivestasNumeris < 1 || ivestasNumeris > kiekis) {
+        if (ivestasnumeris < 1 || ivestasnumeris > kiekis) {
             cout << "Neteisingas numeris." << endl;
             continue;
         }
 
         cout << "Iveskite porciju kieki: ";
-        cin >> ivestasKiekis;
+        cin >> ivestaskiekis;
 
-        if (ivestasKiekis < 1) {
+        if (ivestaskiekis < 1) {
             cout << "Neteisingas kiekis." << endl;
             continue;
         }
 
-        int tikrasIndex = ivestasNumeris - 1;
+        int tikrasindex = ivestasnumeris - 1;
 
-        pasirinkimai[kiekPasirinkta] = tikrasIndex;
-        porcijos[kiekPasirinkta] = ivestasKiekis;
+        pasirinkimai[kiekpasirinkta] = tikrasindex;
+        porcijos[kiekpasirinkta] = ivestaskiekis;
 
-        kiekPasirinkta++;
+        kiekpasirinkta++;
 
         cout << "Ar norite testi? (t/n): ";
         cin >> testi;
     }
 
-    printCheck(menuList, pasirinkimai, porcijos, kiekPasirinkta);
+    printcheck(menulist, pasirinkimai, porcijos, kiekpasirinkta);
 
     cout << endl;
     cout << "Saskaita issaugota receipt.txt faile" << endl;
