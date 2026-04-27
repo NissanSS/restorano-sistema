@@ -5,12 +5,12 @@
 
 using namespace std;
 
-struct menuItemType {
-    string menuItem;
-    double menuPrice;
+struct menuitemtype {
+    string menuitem;
+    double menuprice;
 };
 
-void getData(menuItemType menuList[], int &kiekis) {
+void getdata(menuitemtype menulist[], int &kiekis) {
     ifstream fin("menu.txt");
 
     kiekis = 0;
@@ -20,7 +20,7 @@ void getData(menuItemType menuList[], int &kiekis) {
         return;
     }
 
-    while (getline(fin, menuList[kiekis].menuItem, ';') && fin >> menuList[kiekis].menuPrice) {
+    while (kiekis < 20 && getline(fin, menulist[kiekis].menuitem, ';') && fin >> menulist[kiekis].menuprice) {
         fin.ignore();
         kiekis++;
     }
@@ -28,14 +28,14 @@ void getData(menuItemType menuList[], int &kiekis) {
     fin.close();
 }
 
-void showMenu(menuItemType menuList[], int kiekis) {
+void showmenu(menuitemtype menulist[], int kiekis) {
     cout << endl;
     cout << "PUSRYCIU MENIU" << endl;
 
     for (int i = 0; i < kiekis; i++) {
         int numeris = i + 1;
-        string pavadinimas = menuList[i].menuItem;
-        double kaina = menuList[i].menuPrice;
+        string pavadinimas = menulist[i].menuitem;
+        double kaina = menulist[i].menuprice;
 
         cout << numeris << ". " << pavadinimas << " - "
              << fixed << setprecision(2) << kaina << " EUR" << endl;
@@ -43,16 +43,16 @@ void showMenu(menuItemType menuList[], int kiekis) {
 }
 
 int main() {
-    menuItemType menuList[20];
+    menuitemtype menulist[20];
     int kiekis = 0;
 
-    getData(menuList, kiekis);
+    getdata(menulist, kiekis);
 
     if (kiekis == 0) {
         return 0;
     }
 
-    showMenu(menuList, kiekis);
+    showmenu(menulist, kiekis);
 
     cout << endl;
     cout << "Kita programos dalis bus prideta veliau." << endl;
